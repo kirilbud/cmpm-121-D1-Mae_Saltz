@@ -1,5 +1,9 @@
 import "./style.css";
 
+//engine stuff
+let delta_update: number = performance.now() / 1000.0;
+let delta_time: number = 0;
+
 let woodCounter: number = 0;
 
 // Create basic HTML structure
@@ -19,11 +23,22 @@ woodButton.addEventListener("click", () => {
 });
 
 function increment_wood(amount: number) {
-  woodCounter = woodCounter + amount;
-  woodCounterElement.textContent = String(woodCounter);
+  woodCounter = woodCounter + amount * delta_time;
+  woodCounterElement.textContent = String(Math.floor(woodCounter));
 }
 
 setInterval(increment_wood, 1000, 1);
+
+function tick() {
+  delta_time = performance.now() / 1000.0 - delta_update;
+  delta_update = performance.now() / 1000.0;
+
+  increment_wood(1);
+
+  requestAnimationFrame(tick);
+}
+
+requestAnimationFrame(tick);
 
 console.log("Mae was here");
 console.log("Shawn was here");
