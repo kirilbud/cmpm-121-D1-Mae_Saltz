@@ -5,7 +5,7 @@ let delta_update: number = performance.now() / 1000.0;
 let delta_time: number = 0;
 
 let woodCounter: number = 0;
-//let _woodCutters: number = 0;
+let woodCutters: number = 0;
 //let _woodPerSec: number = 0;
 
 // Create basic HTML structure
@@ -15,16 +15,27 @@ document.body.innerHTML = `
   <div><p>Wood: <span id="wood_counter">0</span></p></div>
   
   <div><p>You currently own: <span id="wood_cutters">0</span> automatic wood cutters giving you <span id="woodPerSec">0</span> wood per sec </p></div>
-  <button id="wood_increment">buy a wood cutter for <span id="wood_counters">10</span> wood!</button>
+  <button id="wood_cutter_button">buy a wood cutter for <span id="wood_counters">10</span> wood!</button>
 `;
 
 // Add click handler
 const woodButton = document.getElementById("wood_increment")!;
 const woodCounterElement = document.getElementById("wood_counter")!;
 
+const woodCutterButton = document.getElementById(
+  "wood_cutter_button",
+) as HTMLButtonElement;
+const woodCutterElement = document.getElementById("wood_cutters")!;
+
 woodButton.addEventListener("click", () => {
   woodCounter = woodCounter + 1;
   woodCounterElement.textContent = String(woodCounter);
+});
+
+woodCutterButton.addEventListener("click", () => {
+  woodCutters = woodCutters + 1;
+  woodCounter = woodCounter - 10;
+  woodCutterElement.textContent = String(woodCutters);
 });
 
 function increment_wood(amount: number) {
@@ -38,7 +49,10 @@ function tick() {
   delta_time = performance.now() / 1000.0 - delta_update;
   delta_update = performance.now() / 1000.0;
 
-  increment_wood(1);
+  increment_wood(1 * woodCutters);
+
+  //disable button if its not in use
+  woodCutterButton.disabled = woodCounter < 10;
 
   requestAnimationFrame(tick);
 }
