@@ -14,8 +14,8 @@ document.body.innerHTML = `
   <button id="wood_increment">Chop Wood!</button>
   <div><p>Wood: <span id="wood_counter">0</span></p></div>
   
-  <div><p>You currently own: <span id="wood_cutters">0</span> automatic wood cutters giving you <span id="woodPerSec">0</span> wood per sec </p></div>
-  <button id="wood_cutter_button">buy a wood cutter for <span id="wood_counters">10</span> wood!</button>
+  <div><p>You currently own: <span id="wood_cutters">0</span> automatic wood cutters giving you <span id="wood_persec">0</span> wood per sec </p></div>
+  <button id="wood_cutter_button">buy a wood cutter for <span id="price">10</span> wood!</button>
 `;
 
 // Add click handler
@@ -26,6 +26,7 @@ const woodCutterButton = document.getElementById(
   "wood_cutter_button",
 ) as HTMLButtonElement;
 const woodCutterElement = document.getElementById("wood_cutters")!;
+const woodPerSec = document.getElementById("wood_persec")!;
 
 woodButton.addEventListener("click", () => {
   woodCounter = woodCounter + 1;
@@ -36,6 +37,7 @@ woodCutterButton.addEventListener("click", () => {
   woodCutters = woodCutters + 1;
   woodCounter = woodCounter - 10;
   woodCutterElement.textContent = String(woodCutters);
+  woodPerSec.textContent = String(woodCutters);
 });
 
 function increment_wood(amount: number) {
