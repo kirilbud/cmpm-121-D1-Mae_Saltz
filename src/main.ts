@@ -9,9 +9,13 @@ interface Item {
   button: HTMLButtonElement;
   productionType: string;
   production: number;
+  description: string;
+  buttonPrompt: string;
+  descriptionElement: HTMLParagraphElement;
 }
 
 const tempButton = document.createElement("button");
+const tempPElem = document.createElement("p");
 const availableItems: Item[] = [
   {
     name: "wood cutter",
@@ -22,9 +26,12 @@ const availableItems: Item[] = [
     button: tempButton,
     productionType: "wood",
     production: 1,
+    description: "",
+    buttonPrompt: "cuts 1 wood per second what else is there too say",
+    descriptionElement: tempPElem,
   },
   {
-    name: "lumber mill",
+    name: "tree farm",
     cost: 100,
     costType: "stone",
     rate: 1.25,
@@ -32,6 +39,22 @@ const availableItems: Item[] = [
     button: tempButton,
     productionType: "wood",
     production: 10,
+    description: "",
+    buttonPrompt: "a small little patch of land giving you 10 wood per second",
+    descriptionElement: tempPElem,
+  },
+  {
+    name: "lumber mill",
+    cost: 1000,
+    costType: "stone",
+    rate: 1.25,
+    amount: 0,
+    button: tempButton,
+    productionType: "wood",
+    production: 100,
+    description: "",
+    buttonPrompt: "big wood factory giving 1000 wood per second",
+    descriptionElement: tempPElem,
   },
   {
     name: "drill",
@@ -42,6 +65,37 @@ const availableItems: Item[] = [
     button: tempButton,
     productionType: "stone",
     production: 1,
+    description: "",
+    buttonPrompt: "small drill making 1 stone per second",
+    descriptionElement: tempPElem,
+  },
+  {
+    name: "small cave",
+    cost: 100,
+    costType: "",
+    rate: 1.25,
+    amount: 0,
+    button: tempButton,
+    productionType: "stone",
+    production: 10,
+    description: "",
+    buttonPrompt:
+      "caves have lots of rocks and these give you 10 stone per second",
+    descriptionElement: tempPElem,
+  },
+  {
+    name: "mining quarry",
+    cost: 1000,
+    costType: "wood",
+    rate: 1.25,
+    amount: 0,
+    button: tempButton,
+    productionType: "stone",
+    production: 100,
+    description: "",
+    buttonPrompt:
+      "not mining for gemstones or rare metals no you are here for 100 stone per second",
+    descriptionElement: tempPElem,
   },
 ];
 
@@ -106,18 +160,21 @@ function increment_stone(amount: number) {
 
 setInterval(increment_wood, 1000, 1);
 
-//let items: Array<HTMLButtonElement> = new (Array<HTMLButtonElement>)();
-
 start();
 function start() {
   for (const upgrade of availableItems) {
-    //let itemDescription = document.createElement('p');
+    const itemDescription = document.createElement("p");
+    itemDescription.textContent = "you currently own " + upgrade.amount + " " +
+      upgrade.name + "s";
 
     const item = document.createElement("button");
     item.textContent = "buy a " + upgrade.name + " for " + upgrade.cost + " " +
       upgrade.costType + "!";
     item.id = upgrade.name;
+    upgrade.descriptionElement = itemDescription;
+    item.title = upgrade.buttonPrompt;
     console.log("gamming");
+    document.body.appendChild(itemDescription);
     document.body.appendChild(item);
 
     item.addEventListener("click", () => {
@@ -130,6 +187,9 @@ function start() {
       upgrade.cost = Math.floor(upgrade.cost * upgrade.rate);
       item.textContent = "buy a " + upgrade.name + " for " + upgrade.cost +
         " " + upgrade.costType + "!";
+      upgrade.descriptionElement.textContent = "you currently own " +
+        upgrade.amount + " " +
+        upgrade.name + "s";
     });
     upgrade.button = item;
   }
