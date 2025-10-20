@@ -1,18 +1,58 @@
 import "./style.css";
 
+interface Item {
+  name: string;
+  cost: number;
+  costType: string;
+  rate: number;
+  amount: number;
+  button: HTMLButtonElement;
+  productionType: string;
+  production: number;
+}
+
+const tempButton = document.createElement("button");
+const availableItems: Item[] = [
+  {
+    name: "wood cutter",
+    cost: 10,
+    costType: "stone",
+    rate: 1.25,
+    amount: 0,
+    button: tempButton,
+    productionType: "wood",
+    production: 1,
+  },
+  {
+    name: "lumber mill",
+    cost: 100,
+    costType: "stone",
+    rate: 1.25,
+    amount: 0,
+    button: tempButton,
+    productionType: "wood",
+    production: 10,
+  },
+  {
+    name: "drill",
+    cost: 10,
+    costType: "wood",
+    rate: 1.25,
+    amount: 0,
+    button: tempButton,
+    productionType: "stone",
+    production: 1,
+  },
+];
+
 //engine stuff
 let delta_update: number = performance.now() / 1000.0;
 let delta_time: number = 0;
 
 let woodCounter: number = 0;
-let woodCutters: number = 0;
-let cuttersPrice: number = 10;
-let lumberMills: number = 0;
-let millPrice: number = 100;
 
 let stoneCounter: number = 0;
-let drillCounter: number = 0;
-let drillPrice: number = 10;
+
 //let woodCutterUpgrades: number = 0;
 //let _woodPerSec: number = 0;
 
@@ -24,48 +64,22 @@ document.body.innerHTML = `
   <button id="stone_increment">Mine Stone!⛰️</button>
   <div><p>Wood: <span id="wood_counter">0</span></p></div>
   <div><p>Stone: <span id="stone_counter">0</span></p></div>
-   <div><p>Your buildings are giving you <span id="wood_persec">0</span> wood per second and <span id="stone_persec">0</span> stone per second </p></div>
+  <div><p>Your buildings are giving you <span id="wood_persec">0</span> wood per second and <span id="stone_persec">0</span> stone per second </p></div>
   
-  <div><p>You currently own: <span id="wood_cutters">0</span> automatic wood cutters.</div>
-  <button id="wood_cutter_button">buy an automatic wood cutter for <span id="cutter_price">10</span> stone!</button>
 
-  <div><p>You currently own: <span id="stone_cutters">0</span> drills.</div>
-  <button id="stone_cutter_button">buy a drill for <span id="drill_price">10</span> wood!</button>
-  
-  <div><p>You currently own: <span id="lumber_mills">0</span> lumber mills.</div>
-  <button id="lumber_mill_button">buy a drill for <span id="mill_price">100</span> stone!</button>
+
 `;
 
 // wood variables
 const woodButton = document.getElementById("wood_increment")!;
 const woodCounterElement = document.getElementById("wood_counter")!;
 
-const cutterPriceElement = document.getElementById("cutter_price")!;
-const millPriceElement = document.getElementById("mill_price")!;
-
-const woodCutterButton = document.getElementById(
-  "wood_cutter_button",
-) as HTMLButtonElement;
-
-const lumberMillButton = document.getElementById(
-  "lumber_mill_button",
-) as HTMLButtonElement;
-
-const woodCutterElement = document.getElementById("wood_cutters")!;
-const lumberMillsElement = document.getElementById("lumber_mills")!;
 const woodPerSec = document.getElementById("wood_persec")!;
 
 // Stone variables
 const stoneButton = document.getElementById("stone_increment")!;
 const stoneCounterElement = document.getElementById("stone_counter")!;
 
-const drillPriceElement = document.getElementById("drill_price")!;
-
-const stoneCutterButton = document.getElementById(
-  "stone_cutter_button",
-) as HTMLButtonElement;
-
-const stoneCutterElement = document.getElementById("stone_cutters")!;
 const stonePerSec = document.getElementById("stone_persec")!;
 
 //button functions
@@ -74,30 +88,9 @@ woodButton.addEventListener("click", () => {
   woodCounterElement.textContent = String(woodCounter);
 });
 
-lumberMillButton.addEventListener("click", () => {
-  lumberMills = lumberMills + 1;
-  stoneCounter = stoneCounter - millPrice;
-  millPrice = Math.floor(millPrice * 1.25);
-  lumberMillsElement.textContent = String(lumberMills);
-});
-
-woodCutterButton.addEventListener("click", () => {
-  woodCutters = woodCutters + 1;
-  stoneCounter = stoneCounter - cuttersPrice;
-  cuttersPrice = Math.floor(cuttersPrice * 1.25);
-  woodCutterElement.textContent = String(woodCutters);
-});
-
 stoneButton.addEventListener("click", () => {
   stoneCounter = stoneCounter + 1;
   stoneCounterElement.textContent = String(stoneCounter);
-});
-
-stoneCutterButton.addEventListener("click", () => {
-  drillCounter = drillCounter + 1;
-  woodCounter = woodCounter - drillPrice;
-  drillPrice = Math.floor(drillPrice * 1.25);
-  stoneCutterElement.textContent = String(drillCounter);
 });
 
 //increment functions
@@ -113,30 +106,60 @@ function increment_stone(amount: number) {
 
 setInterval(increment_wood, 1000, 1);
 
+//let items: Array<HTMLButtonElement> = new (Array<HTMLButtonElement>)();
+
+start();
+function start() {
+  for (const upgrade of availableItems) {
+    //let itemDescription = document.createElement('p');
+
+    const item = document.createElement("button");
+    item.textContent = "buy a " + upgrade.name + " for " + upgrade.cost + " " +
+      upgrade.costType + "!";
+    item.id = upgrade.name;
+    console.log("gamming");
+    document.body.appendChild(item);
+
+    item.addEventListener("click", () => {
+      upgrade.amount = upgrade.amount + 1;
+      if (upgrade.costType == "wood") {
+        woodCounter = woodCounter - upgrade.cost;
+      } else {
+        stoneCounter = stoneCounter - upgrade.cost;
+      }
+      upgrade.cost = Math.floor(upgrade.cost * upgrade.rate);
+      item.textContent = "buy a " + upgrade.name + " for " + upgrade.cost +
+        " " + upgrade.costType + "!";
+    });
+    upgrade.button = item;
+  }
+  requestAnimationFrame(tick);
+}
+
 function tick() {
   delta_time = performance.now() / 1000.0 - delta_update;
   delta_update = performance.now() / 1000.0;
 
-  increment_wood(1 * woodCutters + lumberMills * 10);
-  increment_stone(1 * drillCounter);
-
-  //disable button if its not in use
-  woodCutterButton.disabled = stoneCounter < cuttersPrice;
-  cutterPriceElement.textContent = String(cuttersPrice);
-
-  lumberMillButton.disabled = stoneCounter < millPrice;
-  millPriceElement.textContent = String(millPrice);
-
-  stoneCutterButton.disabled = woodCounter < drillPrice;
-  drillPriceElement.textContent = String(drillPrice);
-
-  woodPerSec.textContent = String(woodCutters + lumberMills * 10);
-  stonePerSec.textContent = String(drillCounter);
-
+  let woodPerSecs = 0;
+  let stonePerSecs = 0;
+  for (const upgrade of availableItems) {
+    if (upgrade.costType == "wood") {
+      upgrade.button.disabled = upgrade.cost > woodCounter;
+    } else {
+      upgrade.button.disabled = upgrade.cost > stoneCounter;
+    }
+    if (upgrade.productionType == "wood") {
+      woodPerSecs = woodPerSecs + upgrade.amount * upgrade.production;
+    } else {
+      stonePerSecs = stonePerSecs + upgrade.amount * upgrade.production;
+    }
+  }
+  increment_stone(stonePerSecs);
+  increment_wood(woodPerSecs);
+  woodPerSec.textContent = String(woodPerSecs);
+  stonePerSec.textContent = String(stonePerSecs);
   requestAnimationFrame(tick);
 }
-
-requestAnimationFrame(tick);
 
 console.log("Mae was here");
 console.log("Shawn was here");
