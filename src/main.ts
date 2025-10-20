@@ -6,10 +6,13 @@ let delta_time: number = 0;
 
 let woodCounter: number = 0;
 let woodCutters: number = 0;
+let cuttersPrice: number = 10;
 let lumberMills: number = 0;
+let millPrice: number = 100;
 
 let stoneCounter: number = 0;
 let drillCounter: number = 0;
+let drillPrice: number = 10;
 //let woodCutterUpgrades: number = 0;
 //let _woodPerSec: number = 0;
 
@@ -24,18 +27,21 @@ document.body.innerHTML = `
    <div><p>Your buildings are giving you <span id="wood_persec">0</span> wood per second and <span id="stone_persec">0</span> stone per second </p></div>
   
   <div><p>You currently own: <span id="wood_cutters">0</span> automatic wood cutters.</div>
-  <button id="wood_cutter_button">buy an automatic wood cutter for <span id="price">10</span> stone!</button>
+  <button id="wood_cutter_button">buy an automatic wood cutter for <span id="cutter_price">10</span> stone!</button>
 
   <div><p>You currently own: <span id="stone_cutters">0</span> drills.</div>
-  <button id="stone_cutter_button">buy a drill for <span id="price">10</span> stone!</button>
+  <button id="stone_cutter_button">buy a drill for <span id="drill_price">10</span> wood!</button>
   
   <div><p>You currently own: <span id="lumber_mills">0</span> lumber mills.</div>
-  <button id="lumber_mill_button">buy a drill for <span id="price">100</span> stone!</button>
+  <button id="lumber_mill_button">buy a drill for <span id="mill_price">100</span> stone!</button>
 `;
 
 // wood variables
 const woodButton = document.getElementById("wood_increment")!;
 const woodCounterElement = document.getElementById("wood_counter")!;
+
+const cutterPriceElement = document.getElementById("cutter_price")!;
+const millPriceElement = document.getElementById("mill_price")!;
 
 const woodCutterButton = document.getElementById(
   "wood_cutter_button",
@@ -52,9 +58,13 @@ const woodPerSec = document.getElementById("wood_persec")!;
 // Stone variables
 const stoneButton = document.getElementById("stone_increment")!;
 const stoneCounterElement = document.getElementById("stone_counter")!;
+
+const drillPriceElement = document.getElementById("drill_price")!;
+
 const stoneCutterButton = document.getElementById(
   "stone_cutter_button",
 ) as HTMLButtonElement;
+
 const stoneCutterElement = document.getElementById("stone_cutters")!;
 const stonePerSec = document.getElementById("stone_persec")!;
 
@@ -66,14 +76,15 @@ woodButton.addEventListener("click", () => {
 
 lumberMillButton.addEventListener("click", () => {
   lumberMills = lumberMills + 1;
-  stoneCounter = stoneCounter - 100;
+  stoneCounter = stoneCounter - millPrice;
+  millPrice = Math.floor(millPrice * 1.25);
   lumberMillsElement.textContent = String(lumberMills);
-  woodPerSec.textContent = String(woodCutters);
 });
 
 woodCutterButton.addEventListener("click", () => {
   woodCutters = woodCutters + 1;
-  stoneCounter = stoneCounter - 10;
+  stoneCounter = stoneCounter - cuttersPrice;
+  cuttersPrice = Math.floor(cuttersPrice * 1.25);
   woodCutterElement.textContent = String(woodCutters);
 });
 
@@ -84,7 +95,8 @@ stoneButton.addEventListener("click", () => {
 
 stoneCutterButton.addEventListener("click", () => {
   drillCounter = drillCounter + 1;
-  woodCounter = woodCounter - 10;
+  woodCounter = woodCounter - drillPrice;
+  drillPrice = Math.floor(drillPrice * 1.25);
   stoneCutterElement.textContent = String(drillCounter);
 });
 
@@ -109,9 +121,14 @@ function tick() {
   increment_stone(1 * drillCounter);
 
   //disable button if its not in use
-  woodCutterButton.disabled = stoneCounter < 10;
-  lumberMillButton.disabled = stoneCounter < 100;
-  stoneCutterButton.disabled = woodCounter < 10;
+  woodCutterButton.disabled = stoneCounter < cuttersPrice;
+  cutterPriceElement.textContent = String(cuttersPrice);
+
+  lumberMillButton.disabled = stoneCounter < millPrice;
+  millPriceElement.textContent = String(millPrice);
+
+  stoneCutterButton.disabled = woodCounter < drillPrice;
+  drillPriceElement.textContent = String(drillPrice);
 
   woodPerSec.textContent = String(woodCutters + lumberMills * 10);
   stonePerSec.textContent = String(drillCounter);
