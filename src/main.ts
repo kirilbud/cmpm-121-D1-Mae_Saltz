@@ -1,5 +1,6 @@
 import "./style.css";
 
+//represents a building and or upgrade
 interface Item {
   name: string;
   cost: number;
@@ -14,8 +15,11 @@ interface Item {
   descriptionElement: HTMLParagraphElement;
 }
 
+//so the compiler doesnt complain that they are not set but will be replaced later
 const tempButton = document.createElement("button");
 const tempPElem = document.createElement("p");
+
+//upgrades and upgrades available to the player
 const availableItems: Item[] = [
   {
     name: "wood cutter",
@@ -99,16 +103,26 @@ const availableItems: Item[] = [
   },
 ];
 
-//engine stuff
+//GLOBALS
+// wood variables
+const woodButton = document.getElementById("wood_increment")!;
+const woodCounterElement = document.getElementById("wood_counter")!;
+
+const woodPerSec = document.getElementById("wood_persec")!;
+
+// Stone variables
+const stoneButton = document.getElementById("stone_increment")!;
+const stoneCounterElement = document.getElementById("stone_counter")!;
+
+const stonePerSec = document.getElementById("stone_persec")!;
+
+//time passed from last frame
 let delta_update: number = performance.now() / 1000.0;
 let delta_time: number = 0;
 
+//resources available
 let woodCounter: number = 0;
-
 let stoneCounter: number = 0;
-
-//let woodCutterUpgrades: number = 0;
-//let _woodPerSec: number = 0;
 
 // Create basic HTML structure
 document.body.innerHTML = `
@@ -123,18 +137,6 @@ document.body.innerHTML = `
 
 
 `;
-
-// wood variables
-const woodButton = document.getElementById("wood_increment")!;
-const woodCounterElement = document.getElementById("wood_counter")!;
-
-const woodPerSec = document.getElementById("wood_persec")!;
-
-// Stone variables
-const stoneButton = document.getElementById("stone_increment")!;
-const stoneCounterElement = document.getElementById("stone_counter")!;
-
-const stonePerSec = document.getElementById("stone_persec")!;
 
 //button functions
 woodButton.addEventListener("click", () => {
@@ -158,10 +160,10 @@ function increment_stone(amount: number) {
   stoneCounterElement.textContent = String(Math.floor(stoneCounter));
 }
 
-setInterval(increment_wood, 1000, 1);
-
+//setup the game
 start();
 function start() {
+  //set up all the buttons and upgrades
   for (const upgrade of availableItems) {
     const itemDescription = document.createElement("p");
     itemDescription.textContent = "you currently own " + upgrade.amount + " " +
@@ -173,7 +175,6 @@ function start() {
     item.id = upgrade.name;
     upgrade.descriptionElement = itemDescription;
     item.title = upgrade.buttonPrompt;
-    console.log("gamming");
     document.body.appendChild(itemDescription);
     document.body.appendChild(item);
 
@@ -196,6 +197,7 @@ function start() {
   requestAnimationFrame(tick);
 }
 
+//this runs every animation frame
 function tick() {
   delta_time = performance.now() / 1000.0 - delta_update;
   delta_update = performance.now() / 1000.0;
@@ -220,6 +222,3 @@ function tick() {
   stonePerSec.textContent = String(stonePerSecs);
   requestAnimationFrame(tick);
 }
-
-console.log("Mae was here");
-console.log("Shawn was here");
