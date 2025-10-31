@@ -1,5 +1,17 @@
 import "./style.css";
+// Create basic HTML structure
+document.body.innerHTML = `
+  <h1>Destruction of the earth!</h1>
+  
+  <button id="wood_increment">Chop Wood!🌳</button>
+  <button id="stone_increment">Mine Stone!⛰️</button>
+  <div><p>Wood: <span id="wood_counter">0</span></p></div>
+  <div><p>Stone: <span id="stone_counter">0</span></p></div>
+  <div><p>Your buildings are giving you <span id="wood_persec">0</span> wood per second and <span id="stone_persec">0</span> stone per second </p></div>
+  
 
+
+`;
 //represents a building and or upgrade
 interface Item {
   name: string;
@@ -123,20 +135,6 @@ let delta_time: number = 0;
 //resources available
 let woodCounter: number = 0;
 let stoneCounter: number = 0;
-
-// Create basic HTML structure
-document.body.innerHTML = `
-  <h1>Destruction of the earth!</h1>
-  
-  <button id="wood_increment">Chop Wood!🌳</button>
-  <button id="stone_increment">Mine Stone!⛰️</button>
-  <div><p>Wood: <span id="wood_counter">0</span></p></div>
-  <div><p>Stone: <span id="stone_counter">0</span></p></div>
-  <div><p>Your buildings are giving you <span id="wood_persec">0</span> wood per second and <span id="stone_persec">0</span> stone per second </p></div>
-  
-
-
-`;
 
 //button functions
 woodButton.addEventListener("click", () => {
