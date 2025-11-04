@@ -1,8 +1,7 @@
 // got fishing idea from: https://fractalizes.github.io/cmpm-121-f25-d1/
-//got emmisions idea from: https://trueappleoperation.github.io/D1-Incremental-Game-Development-Lizbeth-De-Leon/ 
+//got emmisions idea from: https://trueappleoperation.github.io/D1-Incremental-Game-Development-Lizbeth-De-Leon/
 
 import "./style.css";
-
 
 // Create basic HTML structure
 document.body.innerHTML = `
